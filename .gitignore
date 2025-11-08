@@ -1,0 +1,17 @@
+# Node
+node_modules/
+npm-debug.log
+.env
+
+# Build / dist
+frontend/dist/
+backend/public/
+
+# Local backend persisted data
+backend/data/
+
+# Docker & editor stuff
+*.log
+.DS_Store
+.vscode/
+.idea/

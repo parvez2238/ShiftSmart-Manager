@@ -1,0 +1,19 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: ["npm","run","dev","--","--host","0.0.0.0"]
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

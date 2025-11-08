@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { readJson, writeJson } from '../utils/db.js';
+import { v4 as uuid } from 'uuid';
+const router = Router();
+router.get('/', async (req,res)=> res.json(await readJson('tasks')));
+router.get('/by-client/:clientId', async (req,res)=>{ const tasks = await readJson('tasks'); res.json(tasks.filter(t=>t.clientId===req.params.clientId)); });
+router.post('/', async (req,res)=>{ const tasks = await readJson('tasks'); const b=req.body||{}; const newT = { id: uuid(), clientId: b.clientId, title: b.title||'Task', status: b.status||'todo', assigneeId: b.assigneeId||null, priority: b.priority||'normal', notes: b.notes||'' }; tasks.push(newT); await writeJson('tasks', tasks); res.status(201).json(newT); });
+router.put('/:id', async (req,res)=>{ const {id}=req.params; const tasks = await readJson('tasks'); const idx = tasks.findIndex(t=>t.id===id); if(idx===-1) return res.status(404).json({error:'Not found'}); tasks[idx] = {...tasks[idx], ...req.body, id}; await writeJson('tasks', tasks); res.json(tasks[idx]); });
+router.delete('/:id', async (req,res)=>{ const {id}=req.params; let tasks=await readJson('tasks'); tasks = tasks.filter(t=>t.id!==id); await writeJson('tasks', tasks); res.json({ok:true}); });
+export default router;
